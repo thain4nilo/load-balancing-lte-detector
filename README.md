@@ -1,9 +1,9 @@
 # Load Balancing LTE Detector
 #### Detecção de oportunidades de balanceamento de tráfego/carga entre células LTE
-Este repositório contém o código e a documentação relacionados ao projeto "LTE Load Balancing" desenvolvido por Thainá Nilo e Tiago Beltrão Lacerda. O projeto tem como objetivo detectar oportunidades de balanceamento de tráfego/carga entre células LTE (4G) por meio de análise descritiva usando as linguagens R e Python.
+Este repositório contém o código e a documentação relacionados ao projeto "oad Balancing LTE Detector" desenvolvido por Thainá Nilo e Tiago Beltrão Lacerda. O projeto tem como objetivo detectar oportunidades de balanceamento de tráfego/carga entre células LTE (4G) por meio de análise descritiva usando as linguagens R e Python.
 
 ## Descrição do Projeto
-A rede LTE (Long-Term Evolution) é amplamente utilizada para comunicações móveis de alta velocidade em todo o mundo. Para garantir um desempenho ideal da rede, é crucial distribuir adequadamente a carga de tráfego entre as células LTE. O projeto "LTE Load Balancing" se concentra em analisar os dados da rede LTE e identificar oportunidades de balanceamento de carga, o que pode resultar em uma melhoria significativa na qualidade do serviço para os usuários.
+A rede LTE (Long-Term Evolution) é amplamente utilizada para comunicações móveis de alta velocidade em todo o mundo. Para garantir um desempenho ideal da rede, é crucial distribuir adequadamente a carga de tráfego entre as células LTE. O projeto se concentra em analisar os dados da rede LTE e identificar oportunidades de balanceamento de carga, o que pode resultar em uma melhoria significativa na qualidade do serviço para os usuários.
 
 ## Conteúdo do Repositório
 O repositório está organizado da seguinte forma:
