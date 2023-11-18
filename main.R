@@ -1,23 +1,22 @@
-## Detecção de oportunidades de balanceamento de carga entre células LTE #####
+#############################################################################
+# Detecção de oportunidades de balanceamento de carga entre células LTE #####
 ## Autora: Thainá Nilo
+#############################################################################
 
 #### importar bibliotecas ####################################################
 library(dplyr)
 library(stringr)
 
 
-
 #### ler dados ###############################################################
 #base de informações da Célula: Station ID, Azimute, Largura de Banda
-Cadastro <- readxl::read_excel("amostrabase.xlsx") 
+Cadastro <- readxl::read_excel("Data/amostrabase.xlsx") 
 #base de Células com informações dos KPIs de Performance na 2ª HMM do dia durante uma semana
-Celulas2Hmm <- readxl::read_excel("amostraCelulasHmm.xlsx") 
-
+Celulas2Hmm <- readxl::read_excel("Data/amostraCelulasHmm.xlsx") 
 
 
 #### Limpeza de dados ########################################################
 # Para a publicação deste projeto no repositório, foi suprimida a etapas de limpeza dos dados.
-
 
 
 #### Manipulação #############################################################
@@ -55,7 +54,7 @@ ClassificacaoCelulas <- PerformanceCelulas %>% filter(PERFORMANCE_DIA == "NOK") 
   select(CELL_ID,CLASSIFICACAO)
 
 # Formatar e compilar quais os indicadores foram responsáveis por definir a anormalidade das celulas
-IndicadoresFora <- BaseCelulas %>%
+IndicadoresFora <- PerformanceCelulas %>%
   group_by(CELL_ID,INDICADOR) %>%
   summarise(QNTD = n() ) %>%
   filter(INDICADOR != "") %>%
@@ -68,20 +67,22 @@ IndicadoresFora <- BaseCelulas %>%
 
 # Construção de uma base simplificada com apenas uma ocorrencia de célula
 ConsolidadoCelulas <- merge(Cadastro,ClassificacaoCelulas, all.x = TRUE) %>%
-  mutate(CLASSIFICACAO = if_else(is.na(CLASSIFICACAO),"NORMAL",CLASSIFICACAO))
+  #Como foi realizado um filtro para classificar apenas as células NOK, foi necessário preencher a classificação nas demais
+  mutate(CLASSIFICACAO = if_else(is.na(CLASSIFICACAO),"NORMAL",CLASSIFICACAO)) 
 ConsolidadoCelulas <- merge(ConsolidadoCelulas,IndicadoresFora, all.x = TRUE) %>%
-  mutate(INDICADOR = if_else(CLASSIFICACAO == "NORMAL",NA,INDICADOR))
+  mutate(INDICADOR = if_else(CLASSIFICACAO == "NORMAL","-",INDICADOR))
 
 # Separando o DF de células target para rastreio de oportunidade de balanceamento (críticas)
-CelCritico <- baseassess %>%
-  filter(Classificação == "CRITICO")
-  select(-Indicador)
+CelCritico <- ConsolidadoCelulas %>%
+  filter(CLASSIFICACAO == "CRITICO") %>% 
+  select(-INDICADOR)
 
 # Separando o DF de células passíveis de receber mais tráfego/carga através de balanceamento (boas)
-CelNormal <- baseassess %>%
-  filter(Classificação == "NORMAL")
-  select(-Indicador)
+CelNormal <- ConsolidadoCelulas %>%
+  filter(CLASSIFICACAO == "NORMAL") %>%
+  select(-INDICADOR)
 
 # Chamada para o módulo de detecção das oportunidades de balanceamento
-source("Scripts/modulo_critico-bom.R", encoding = "utf-8")
-  
+# input: CelNormal, CelCritico
+# output: Oport_CoSite
+source("modulo_oportunidades_cosite.R", encoding = "utf-8")
